@@ -1,0 +1,11 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.textField({
+    label: 'Max Options'|t('app'),
+    instructions: null,
+    id: 'max-options',
+    name: 'maxOptions',
+    value: field.maxOptions,
+    size: 2,
+    errors: field.getErrors('maxOptions'),
+}) }}
