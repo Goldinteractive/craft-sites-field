@@ -1,7 +1,7 @@
 {
     "name": "goldinteractive/sites-field",
     "type": "craft-plugin",
-    "license": "mit",
+    "license": "proprietary",
     "require": {
         "php": ">=8.0.2",
         "craftcms/cms": "^4.3.10"
