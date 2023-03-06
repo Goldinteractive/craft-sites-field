@@ -98,9 +98,20 @@ class SitesField extends Field
             $optionLabels[] = $option['label'];
         }
 
-        if (count($selectedValues) > 1) {
-            // Convert the value to a MultiOptionsFieldData object
+        if ($this->isRadio()) {
+            $value = new SingleOptionFieldData(null, null, true, true);
+
+            if (!empty($selectedValues)) {
+                // Convert the value to a SingleOptionFieldData object
+                $selectedValue = reset($selectedValues);
+                $index = array_search($selectedValue, $optionValues, true);
+                $valid = $index !== false;
+                $label = $valid ? $optionLabels[$index] : null;
+                $value = new SingleOptionFieldData($label, $selectedValue, true, $valid);
+            }
+        }else {
             $selectedOptions = [];
+
             foreach ($selectedValues as $selectedValue) {
                 $index = array_search($selectedValue, $optionValues, true);
                 $valid = $index !== false;
@@ -108,15 +119,6 @@ class SitesField extends Field
                 $selectedOptions[] = new OptionData($label, $selectedValue, true, $valid);
             }
             $value = new MultiOptionsFieldData($selectedOptions);
-        } elseif (!empty($selectedValues)) {
-            // Convert the value to a SingleOptionFieldData object
-            $selectedValue = reset($selectedValues);
-            $index = array_search($selectedValue, $optionValues, true);
-            $valid = $index !== false;
-            $label = $valid ? $optionLabels[$index] : null;
-            $value = new SingleOptionFieldData($label, $selectedValue, true, $valid);
-        } else {
-            $value = new SingleOptionFieldData(null, null, true, true);
         }
 
         $value->setOptions($options);
@@ -152,11 +154,7 @@ class SitesField extends Field
             }
         }
 
-        $template = 'checkboxGroup';
-
-        if ($this->maxOptions && $this->maxOptions == 1) {
-            $template = 'radioGroup';
-        }
+        $template = $this->isRadio() ? 'radioGroup' : 'checkboxGroup';
 
         $values = [];
 
@@ -194,7 +192,7 @@ class SitesField extends Field
             $range[] = (int)$option['value'];
         }
 
-        $allowArray = $this->maxOptions && $this->maxOptions > 1;
+        $allowArray = !$this->isRadio();
 
         return [
             ['in', 'range' => $range, 'allowArray' => $allowArray],
@@ -229,5 +227,9 @@ class SitesField extends Field
         }
 
         return $ret;
+    }
+
+    protected function isRadio() {
+        return $this->maxOptions && $this->maxOptions == 1;
     }
 }
