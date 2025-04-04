@@ -141,7 +141,7 @@ class SitesField extends Field
         return parent::serializeValue($value, $element);
     }
 
-    protected function inputHtml(mixed $value, ElementInterface $element = null): string
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         if ($value instanceof MultiOptionsFieldData) {
             if (ArrayHelper::contains($value, 'valid', false, true)) {
